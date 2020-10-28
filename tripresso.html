@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .imgFit {
+            height: 100%;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .currentSort {
+            background-color: lightgrey;
+        }
+
+        .textEmphasized{
+            font-size: 32px;
+            color: #ff9800;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="app">
+
+        <!-- navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link">排序</a>
+                    </li>
+                    <li class="nav-item" :class="{currentSort: current_sort=='sortByRate'}">
+                        <a class="nav-link" href="javascript:" @click="sortByRate">評分</a>
+                    </li>
+                    <li class="nav-item dropdown" :class="{currentSort: current_sort=='sortByPrice'}">
+                        <a class="nav-link dropdown-toggle" href="javascript:" id="navbarDropdownMenuLink" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            價格
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="javascript:" @click="sortByPrice_asc">價格：低至高</a>
+                            <a class="dropdown-item" href="javascript:" @click="sortByPrice_desc">價格：高至低</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- content -->
+        <div class="py-2">
+
+            <div class="card mb-3"
+                v-for="(item, index) in tripData.slice((page*row_per_page)-row_per_page,page*row_per_page)"
+                :key="index">
+                <div class="row no-gutter">
+                    <div class="col-md-3">
+                        <img :src="item.image_url" class="card-img imgFit" alt="...">
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card-body">
+                            <small>{{item.agency}} <svg v-for="n in item.rating" width="12px" height="12px" viewBox="0 2 20 20" class="bi bi-star-fill" fill="#ff9800" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                              </svg><svg v-for="n in (5-item.rating)" width="12px" height="12px" viewBox="0 2 20 20" class="bi bi-star-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                              </svg></small>
+                            <h6 class="card-title mt-2">{{item.title}}</h6>
+                            <span class="badge badge-pill badge-light border border-primary mr-2"
+                                v-for="(t, index) in item.tags">{{t}}</span>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex travelDate align-items-center">
+                                    <div class="d-flex flex-column mr-3"
+                                        v-for="(g, index) in item.group.slice(0,4)">
+                                        <small class="text-muted">{{g.date}}</small>
+                                        <span class="badge badge-light border border-primary">可售{{g.quantity}}位</span>
+                                    </div>
+                                    <div>更多日期</div>
+                                </div>
+                                <p class="card-text"><span class="textEmphasized">{{item.tour_days}}</span>天<span class="textEmphasized">{{item.min_price}}</span>元起</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <!-- pagination -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{disabled: page==1}">
+                    <a class="page-link" href="javascript:" @click="prePage">Previous</a>
+                </li>
+                <li class="page-item" :class="{active: page==n}" v-for="(n,index) in total_page"><a class="page-link"
+                        class="page_button" @click="page=n" href="javascript:">{{n}}</a></li>
+                <li class="page-item" :class="{disabled: page==total_page}">
+                    <a class="page-link" href="javascript:" @click="nextPage">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        let app = new Vue({
+            el: "#app",
+            data: {
+                page: 1,
+                row_per_page: 3,
+                total_page: 0,
+                current_sort: "",
+                pages: [],
+                tripData: [{
+                    title: "",
+                    rating: 0,
+                    tags: [],
+                    tour_days: 0,
+                    min_price: 0,
+                    group: []
+
+                }]
+
+            },
+            mounted() {
+                axios.get("trip-info.json")
+                    .then((response) => {
+                        console.log(response.data);
+                        this.tripData = response.data
+                        this.total_page = Math.ceil(response.data.length / this.row_per_page)
+                        console.log(this.total_page)
+                        for (let index = 1; index <= this.total_page; index++) {
+                            this.pages.push(index);
+                        }
+                        console.log(this.pages)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
+
+            },
+            methods: {
+                sortByRate() {
+                    this.page=1;
+                    this.tripData.sort(function (a, b) {
+                        return b.rating - a.rating;
+                    });
+                    
+                },
+                sortByPrice_asc() {
+                    this.page=1;
+                    this.tripData.sort(function (a, b) {
+                        return a.min_price - b.min_price;
+                    });
+                    
+                },
+
+                sortByPrice_desc() {
+                    this.page=1;
+                    this.tripData.sort(function (a, b) {
+                        return b.min_price - a.min_price;
+                    });
+                    
+                },
+                prePage() {
+                    this.page--;
+                    if (this.page < 1) {
+                        this.page = 1
+                    }
+                },
+                nextPage() {
+                    this.page++;
+                    if (this.page > this.total_page) {
+                        this.page = this.total_page
+                    }
+                }
+            },
+
+
+        })
+    </script>
+</body>
+
+</html>

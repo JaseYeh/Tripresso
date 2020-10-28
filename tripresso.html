@@ -17,10 +17,6 @@
             border-bottom-right-radius: 0;
         }
 
-        .currentSort {
-            background-color: lightgrey;
-        }
-
         .textEmphasized{
             font-size: 32px;
             color: #ff9800;
@@ -44,10 +40,10 @@
                     <li class="nav-item active">
                         <a class="nav-link">排序</a>
                     </li>
-                    <li class="nav-item" :class="{currentSort: current_sort=='sortByRate'}">
+                    <li class="nav-item">
                         <a class="nav-link" href="javascript:" @click="sortByRate">評分</a>
                     </li>
-                    <li class="nav-item dropdown" :class="{currentSort: current_sort=='sortByPrice'}">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="javascript:" id="navbarDropdownMenuLink" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             價格
@@ -139,6 +135,7 @@
                 page: 1,
                 row_per_page: 3,
                 total_page: 0,
+                current_sort: "",
                 pages: [],
                 tripData: [{
                     title: "",
@@ -183,7 +180,6 @@
                     this.tripData.sort(function (a, b) {
                         return a.min_price - b.min_price;
                     });
-                    
                 },
 
                 sortByPrice_desc() {

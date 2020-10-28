@@ -135,8 +135,6 @@
                 page: 1,
                 row_per_page: 3,
                 total_page: 0,
-                current_sort: "",
-                pages: [],
                 tripData: [{
                     title: "",
                     rating: 0,
@@ -155,10 +153,6 @@
                         this.tripData = response.data
                         this.total_page = Math.ceil(response.data.length / this.row_per_page)
                         console.log(this.total_page)
-                        for (let index = 1; index <= this.total_page; index++) {
-                            this.pages.push(index);
-                        }
-                        console.log(this.pages)
                     })
                     .catch(function (error) {
                         console.log(error);
